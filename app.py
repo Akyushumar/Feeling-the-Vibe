@@ -31,20 +31,17 @@ def get_auth_header():
     return {"Authorization": f"Bearer {token}"}
 
 def search_for_artist(token, artist_name):
-    url = f"https://api.spotify.com/v1/search?q={artist_name}&type=artist"
+    url = f"https://api.spotify.com/v1/search?q={artist_name}&type=artist&limit=1"
     headers = get_auth_header()
     headers["Authorization"] = f"Bearer {token}"
     
     response = get(url, headers=headers)
-    json_result = json.loads(response.content)
+    json_result = json.loads(response.content)['artists']['items']
     
-    if len(json_result) == 0:
+    if response.status_code != 200 or len(json_result) == 0:
         return None
     
-    if response.status_code == 200:
-        return response.json()
-    else:
-        return None
+    return json_result
 
 token = get_token()
 #print(f"Access Token: {token}")
