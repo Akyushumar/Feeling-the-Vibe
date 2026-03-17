@@ -1,2 +1,12 @@
-myenv
 .env
+myenv/
+Feeling_the_Vibe_Project_Memo.docx
+Feeling_the_Vibe_Project_Memo.pdf
+data/*.csv
+app.py
+newplot.png
+newplot2.png
+project.ipynb
+structure.txt
+__pycache__/
+*.pyc
