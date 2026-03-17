@@ -2,6 +2,7 @@
 import lyricsgenius
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
@@ -10,15 +11,24 @@ genius = None
 def get_genius_client():
     global genius
     if genius is None:
+        # Try Streamlit secrets first, fall back to .env
+        try:
+            token = st.secrets["GENIUS_ACCESS_TOKEN"]
+        except:
+            token = os.getenv("GENIUS_ACCESS_TOKEN")
+        
+        if not token:
+            return None
+            
         genius = lyricsgenius.Genius(
-            os.getenv("GENIUS_CLIENT_ACCESS_TOKEN"),
+            token,
             skip_non_songs=True,
-            excluded_terms=["(Remix)", "(Live)", "(Cover)"],
+            excluded_terms=["(Remix)", "(Live)"],
             remove_section_headers=True,
             timeout=10,
-            retries=3 
+            retries=2,
+            verbose=False
         )
-        genius.verbose = False
     return genius
 
 def get_lyrics(track_name, artist_name):
